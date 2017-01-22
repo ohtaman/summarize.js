@@ -1,0 +1,31 @@
+{
+  "name": "summarize.js",
+  "version": "1.0.0",
+  "description": "Auto summarization in browser",
+  "main": "summarize.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ohtaman/summarize.js.git"
+  },
+  "keywords": [
+    "Quantum",
+    "Annealing",
+    "Automatic",
+    "Summarization"
+  ],
+  "author": "ohtaman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ohtaman/summarize.js/issues"
+  },
+  "homepage": "https://github.com/ohtaman/summarize.js#readme",
+  "dependencies": {
+    "tiny-segmenter": "^0.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^1.14.0"
+  }
+}
