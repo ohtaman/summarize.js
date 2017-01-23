@@ -45,7 +45,18 @@ function pmi(x, y) {
     return Math.log2() - Math.log2() - Math.log2();
 }
 
+function summarize (sentences, callback) {
+    console.log('Start summarize.');
+    callback(sentences.map(function (sentence, score) {
+        console.log(sentence)
+        console.log(score)
+        var id = sentence[0];
+        var text = sentence[1];
+        return 0.4;
+    }));
+    console.log('End sumarize.');
+}
+
 module.exports = {
-    encode: encode,
-    pmi: pmi
+    summarize: summarize
 }

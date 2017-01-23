@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/ohtaman/summarize.js#readme",
   "dependencies": {
+    "jquery": "^3.1.1",
     "tiny-segmenter": "^0.2.0"
   },
   "devDependencies": {
