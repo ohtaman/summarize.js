@@ -27,22 +27,21 @@ $(document).ready(function(){
             editable(textArea, false);
         }
 
-        $(textContents.get().map(function (elem) {
-            return divideToSentence(elem.innerHTML).map(function (sentence) { 
+        textContents.map(function (idx, elem) {
+            var text = $(elem).text();
+            return divideToSentence(text).map(function (sentence) { 
                 return $('<span class="sentence">').text(sentence)[0];
-            });
-        }).reduce(function (line1, line2) {
-            return line1.concat($('<br>')[0], line2);
-        })).appendTo(textArea.empty());
+            }).concat($('<br>')[0]);
+        }).appendTo(textArea.empty());
 
         var sentences = $('span.sentence');
         summarize.summarize(
-            sentences.get().map(function (elem) {
-                return elem.innerHTML;
-            }),
+            sentences.map(function (idx, elem) {
+                return $(elem).text();
+            }).get(),
             function (scores) {
                 scores.forEach(function (score, idx) {
-                    $(spans[idx]).css('opacity', score);
+                    $(sentences[idx]).css('opacity', score);
                 });
             }
         );

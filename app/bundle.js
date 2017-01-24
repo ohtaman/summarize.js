@@ -73,22 +73,21 @@
 	            editable(textArea, false);
 	        }
 
-	        $(textContents.get().map(function (elem) {
-	            return divideToSentence(elem.innerHTML).map(function (sentence) { 
+	        textContents.map(function (idx, elem) {
+	            var text = $(elem).text();
+	            return divideToSentence(text).map(function (sentence) { 
 	                return $('<span class="sentence">').text(sentence)[0];
-	            });
-	        }).reduce(function (line1, line2) {
-	            return line1.concat($('<br>')[0], line2);
-	        })).appendTo(textArea.empty());
+	            }).concat($('<br>')[0]);
+	        }).appendTo(textArea.empty());
 
 	        var sentences = $('span.sentence');
 	        summarize.summarize(
-	            sentences.get().map(function (elem) {
-	                return elem.innerHTML;
-	            }),
+	            sentences.map(function (idx, elem) {
+	                return $(elem).text();
+	            }).get(),
 	            function (scores) {
 	                scores.forEach(function (score, idx) {
-	                    $(spans[idx]).css('opacity', score);
+	                    $(sentences[idx]).css('opacity', score);
 	                });
 	            }
 	        );
@@ -55624,6 +55623,7 @@
 
 	var TinySegmenter = __webpack_require__(1);
 	var math = __webpack_require__(2);
+	window.math = math;
 
 	function buildVocablary(tokens) {
 	    var vocablary = {}
@@ -55636,19 +55636,15 @@
 	    return vocablary;
 	}
 
-	function splitToSentence(text) {
-	    return text.split('[\n。.]');
-	}
-
 	function flatten(array) {
 	    return array.reduce(function (a, b) {
 	        return a.concat(b);
 	    });
 	}
 
-	function encode(text) {
+	function encode(sentences) {
 	    var segmenter = new TinySegmenter();
-	    var tokens = splitToSentence(text).map(function (sentence) {
+	    var tokens = sentences.map(function (sentence) {
 	        return segmenter.segment(sentence);
 	    });
 	    var vocab = buildVocablary(flatten(tokens));
@@ -55660,9 +55656,11 @@
 	    return {tokens: tokenIds, vocab: vocab};
 	}
 
-	function calcPMI(tokenIds) {
+	function calcPMI(tokenIds, vocab) {
 	    var freq = math.matrix();
 	    var corr = math.matrix();
+
+
 	}
 
 	function pmi(x, y) {
@@ -55670,20 +55668,61 @@
 	}
 
 	function summarize (sentences, callback) {
-	    console.log('Start summarize.');
-	    callback(sentences.map(function (sentence, score) {
-	        console.log(sentence)
-	        console.log(score)
-	        var id = sentence[0];
-	        var text = sentence[1];
-	        return 0.4;
+	    var ep = 1.0e-10
+	    console.log('Start summarization.');
+	    var tokens = encode(sentences);
+	    var vocabSize = Object.keys(tokens.vocab).length;
+	    var tf = Array(vocabSize).fill(0);
+	    flatten(tokens.tokens).forEach(function (tokenId) {
+	        tf[tokenId] += 1;
+	    });
+
+	    var corr = math.zeros(vocabSize, vocabSize);
+	    tokens.tokens.forEach(function (tokenIds) {
+	        var set = new Set(tokenIds);
+	        set.forEach(function (tokenId1) {
+	            set.forEach(function (tokenId2) {
+	                if (tokenId1 !== tokenId2) {
+	                    corr._data[tokenId1][tokenId2] += 1
+	                }
+	            });
+	        });
+	    });
+
+	    var pmi = corr.map(function (value, idx) {
+	        var tmp = tf[idx[0]]*tf[idx[1]];
+	        if (tmp > 0) {
+	            return value/tmp;
+	        } else {
+	            return 0;
+	        }
+	    });
+
+	    var normalizer = math.sqrt(math.multiply(pmi, math.ones(pmi.size()[0])))
+	    window.normalizer = normalizer
+	    var normalizedPmi = pmi.map((value, idx) => {
+	        if (normalizer[idx[0]] == 0 || normalizer[idx[1]] == 0) {
+	            return 0;
+	        } else {
+	            console.log(normalizer[idx[0]]*normalizer[idx[1]])
+	            return value/(normalizer[idx[0]]*normalizer[idx[1]]);
+	        }
+	    });
+
+	    window.math = math;
+	    window.pmi = pmi;
+	    window.npmi = normalizedPmi
+
+	    callback(tokens.tokens.map(function (tokens, score) {
+	        return Math.random();
 	    }));
-	    console.log('End sumarize.');
+	    console.log('End sumarization.');
 	}
 
 	module.exports = {
 	    summarize: summarize
 	}
+
 
 /***/ },
 /* 512 */
