@@ -55701,11 +55701,10 @@
 	    var normalizer = math.sqrt(math.multiply(pmi, math.ones(pmi.size()[0])))
 	    window.normalizer = normalizer
 	    var normalizedPmi = pmi.map((value, idx) => {
-	        if (normalizer[idx[0]] == 0 || normalizer[idx[1]] == 0) {
+	        if (normalizer.get([idx[0]]) == 0 || normalizer.get([idx[1]]) == 0) {
 	            return 0;
 	        } else {
-	            console.log(normalizer[idx[0]]*normalizer[idx[1]])
-	            return value/(normalizer[idx[0]]*normalizer[idx[1]]);
+	            return value/(normalizer.get([idx[0]])*normalizer.get([idx[1]]));
 	        }
 	    });
 
