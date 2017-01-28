@@ -12,35 +12,31 @@ function editable(elem, value) {
     }
 }
 
-function divideToSentence(text) {
-    return text.replace(/([。.：:;])/g, '$1\n').split('\n');
-}
-
 $(document).ready(function(){
     var summarizeButton = $('#summarize-button');
     var textArea = $('#textarea');
     var textContents = textArea.contents();
 
-    summarizeButton.on('click', function () {
+    summarizeButton.on('click', (e) => {
         if (editable(textArea)) {
             textContents = textArea.contents();
             editable(textArea, false);
         }
 
-        textContents.map(function (idx, elem) {
+        textContents.map((idx, elem) => {
             var text = $(elem).text();
-            return divideToSentence(text).map(function (sentence) { 
+            return summarize.divideToSentence(text).map((sentence) => { 
                 return $('<span class="sentence">').text(sentence)[0];
             }).concat($('<br>')[0]);
         }).appendTo(textArea.empty());
 
         var sentences = $('span.sentence');
         summarize.summarize(
-            sentences.map(function (idx, elem) {
+            sentences.map((idx, elem) => {
                 return $(elem).text();
             }).get(),
-            function (scores) {
-                scores.forEach(function (score, idx) {
+            (scores) => {
+                scores.forEach((score, idx) => {
                     $(sentences[idx]).css('opacity', score);
                 });
             }
@@ -54,8 +50,4 @@ $(document).ready(function(){
         }
         textArea.focus();
     });
-
-    window.math = math;
-    window.summarize = summarize;
-    var segmenter = new TinySegmenter();
 });

@@ -58,35 +58,31 @@
 	    }
 	}
 
-	function divideToSentence(text) {
-	    return text.replace(/([。.：:;])/g, '$1\n').split('\n');
-	}
-
 	$(document).ready(function(){
 	    var summarizeButton = $('#summarize-button');
 	    var textArea = $('#textarea');
 	    var textContents = textArea.contents();
 
-	    summarizeButton.on('click', function () {
+	    summarizeButton.on('click', (e) => {
 	        if (editable(textArea)) {
 	            textContents = textArea.contents();
 	            editable(textArea, false);
 	        }
 
-	        textContents.map(function (idx, elem) {
+	        textContents.map((idx, elem) => {
 	            var text = $(elem).text();
-	            return divideToSentence(text).map(function (sentence) { 
+	            return summarize.divideToSentence(text).map((sentence) => { 
 	                return $('<span class="sentence">').text(sentence)[0];
 	            }).concat($('<br>')[0]);
 	        }).appendTo(textArea.empty());
 
 	        var sentences = $('span.sentence');
 	        summarize.summarize(
-	            sentences.map(function (idx, elem) {
+	            sentences.map((idx, elem) => {
 	                return $(elem).text();
 	            }).get(),
-	            function (scores) {
-	                scores.forEach(function (score, idx) {
+	            (scores) => {
+	                scores.forEach((score, idx) => {
 	                    $(sentences[idx]).css('opacity', score);
 	                });
 	            }
@@ -100,10 +96,6 @@
 	        }
 	        textArea.focus();
 	    });
-
-	    window.math = math;
-	    window.summarize = summarize;
-	    var segmenter = new TinySegmenter();
 	});
 
 /***/ },
@@ -55638,9 +55630,10 @@
 	function buildVocab(tokens) {
 	    var vocab = {}
 	    tokens.forEach((token) => {
-	        var keys = Object.keys(vocab)
+	        var keys = Object.keys(vocab);
 	        if (keys.indexOf(token) < 0) {
-	            console.log(keys.length);
+	            console.log(keys.length)
+	            console.log(token);
 	            vocab[token] = keys.length;
 	        }
 	    });
@@ -55678,11 +55671,19 @@
 	    });
 	    window.tf = tf;
 
+	    var ivocab = {}
+	Object.keys(tokens.vocab).forEach((key) => {ivocab[tokens.vocab[key]] = key;})
 	    var corr = math.zeros(vocabSize, vocabSize);
 	    tokens.tokens.forEach(function (tokenIds) {
 	        var set = new Set(tokenIds);
 	        set.forEach(function (tokenId1) {
+	            if (ivocab[tokenId1].length <= 1) {
+	                return;
+	            }
 	            set.forEach(function (tokenId2) {
+	                if (ivocab[tokenId1].length <= 2) {
+	                    return;
+	                }
 	                if (tokenId1 !== tokenId2) {
 	                    corr._data[tokenId1][tokenId2] += 1
 	                }
@@ -55711,8 +55712,7 @@
 	    window.npmi = normalizedPmi
 
 	    var alpha = 0.85;
-	    var b = math.zeros(pmi.size()[0]);
-	    b.set([0], 1.0);
+	    var b = math.divide(math.ones(pmi.size()[0]), pmi.size()[0]);
 	    var google = math.add(math.multiply(alpha/pmi.size()[0], math.ones(pmi.size())), math.multiply((1 - alpha), normalizedPmi));
 	    window.google = google;
 
@@ -55737,6 +55737,24 @@
 	    divideToSentence: divideToSentence
 	}
 
+
+	class Vocabulary {
+	    constructor (tokens) {
+
+	    }
+
+
+	}
+
+	class Summarizer {
+	    constructor () {
+	        this.segmenter = new TinySegmenter();
+	    }
+
+	    summarize (text, callback) {
+
+	    }
+	};
 
 /***/ },
 /* 512 */
