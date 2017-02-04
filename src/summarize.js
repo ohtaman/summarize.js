@@ -1,3 +1,5 @@
+var stopWords = require('./stopWords');
+
 class JapaneseSentenceSegmenter {
     static segment(text) {
         return text.replace(/([。.：:;])/g, '$1\n').split('\n');
