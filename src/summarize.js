@@ -251,5 +251,6 @@ module.exports = {
     JapaneseSentenceSegmenter,
     TinyTokenizer,
     VocabularyProcessor,
-    Summarizer
+    Summarizer,
+    QuantumIsingAnnealer
 }
