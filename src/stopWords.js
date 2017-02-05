@@ -1,4 +1,4 @@
-moduel.exports = new Set([
+module.exports = new Set([
 "あそこ",
 "あたり",
 "あちら",

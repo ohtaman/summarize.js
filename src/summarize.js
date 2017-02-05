@@ -1,8 +1,9 @@
+var TinySegmenter = require('tiny-segmenter');
 var stopWords = require('./stopWords');
 
 class JapaneseSentenceSegmenter {
-    static segment(text) {
-        return text.replace(/([。.：:;])/g, '$1\n').split('\n');
+    segment(text) {
+        return text.replace(/([。.：:;])/g, '$1\n').trim().split('\n');
     }
 }
 
@@ -11,22 +12,22 @@ class TinyTokenizer {
         this.segmenter = new TinySegmenter();
     }
 
-    tokenize (raw_text) {
-        return this.segmenter.segment(raw_text);
+    tokenize (rawText) {
+        return this.segmenter.segment(rawText);
     }
 }
 
 class VocabularyProcessor {
-    constructor (tokenizer, unknown="") {
+    constructor (tokenizer=new TinyTokenizer(), unknown="") {
         this.tokenizer = tokenizer;
         this.unknown = unknown;
     }
 
-    fit (raw_documents) {
+    fit (rawDocuments) {
         this._vocab = {};
         this._vocab[this.unknown] = 0;
-        raw_documents.forEach((raw_document) => {
-            let tokens = this.tokenizer.tokenize(raw_document);
+        rawDocuments.forEach((rawDocument) => {
+            let tokens = this.tokenizer.tokenize(rawDocument);
             tokens.forEach((token) => {
                 if (!(token in this._vocab)) {
                     let idx = Object.keys(this._vocab).length;
@@ -43,9 +44,9 @@ class VocabularyProcessor {
         return this;
     }
 
-    transform (raw_documents) {
-        return raw_documents.map((raw_document) => {
-            let tokens = this.tokenizer.tokenize(raw_document);
+    transform (rawDocuments) {
+        return rawDocuments.map((rawDocument) => {
+            let tokens = this.tokenizer.tokenize(rawDocument);
             return tokens.map((token) => this._vocab[token]);
         });
     }
@@ -60,13 +61,15 @@ class VocabularyProcessor {
 };
 
 class Summarizer {
-    constructor (vocab) {
+    constructor (vocab=new VocabularyProcessor(new TinyTokenizer())) {
         this.vocab = vocab;
     }
 
-    summarize (raw_sentences, callback) {
-        let sentences = this.vocab.transform(raw_sentences);
+    summarize (rawSentences, callback) {
+        this.vocab.fit(rawSentences);
+        let sentences = this.vocab.transform(rawSentences);
         let termWeights = this.calcTermWeights(sentences);
+        return rawSentences;
     }
 
     calcTermWeights (sentences) {
@@ -243,3 +246,10 @@ class QuantumIsingAnnealer {
         );
     }
 };
+
+module.exports = {
+    JapaneseSentenceSegmenter,
+    TinyTokenizer,
+    VocabularyProcessor,
+    Summarizer
+}
