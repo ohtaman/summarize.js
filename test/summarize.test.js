@@ -61,4 +61,12 @@ describe('summarize', () => {
             expect(summarized).to.have.length.below(targetLength);
         });
     });
+
+    describe('QuantumIsingAnnealer', () => {
+        let testee = new summarize.QuantumIsingAnnealer((5, 5));
+        it('can get state', () => {
+            let state = testee.state();
+            should.equal(math.size(state) == [5, 5]);
+        })
+    });
 });

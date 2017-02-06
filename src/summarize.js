@@ -1,3 +1,4 @@
+var math = require('mathjs');
 var TinySegmenter = require('tiny-segmenter');
 var stopWords = require('./stopWords');
 
@@ -98,7 +99,21 @@ class QuantumIsingAnnealer {
         this.latticeSize = math.prod(latticeShape);
     }
 
-    optimize (J, H, {initialBeta=40, initialGamma=10, betaFactor=1.05, gammaFactor=0.95, nTrotter=32, freezeLimit=100, minPercent=0.02, maxFlip=3, maxAccepts=10, maxTrials=100, maxIter=10000, callback=()=>{}} = {}) {
+    optimize (J, H,{
+            initialBeta=40,
+            initialGamma=10,
+            betaFactor=1.05,
+            gammaFactor=0.95,
+            nTrotter=32,
+            freezeLimit=100,
+            minPercent=0.02,
+            maxFlip=3,
+            maxAccepts=10,
+            maxTrials=100,
+            maxIter=10000,
+            callback=()=>{}
+        } = {}) {
+
         this.J = J;
         this.H = H;
         this.beta = initialBeta;
