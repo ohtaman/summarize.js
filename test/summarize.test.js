@@ -62,6 +62,12 @@ describe('summarize', () => {
         });
     });
 
+    describe('SimulatedIsingAnnealer', () => {
+        let testee = new summarize.SimulatedIsingAnnealer((5, 5));
+        let J = {}
+        testee.optimize(J)
+    });
+
     describe('QuantumIsingAnnealer', () => {
         let testee = new summarize.QuantumIsingAnnealer((5, 5));
         it('can get state', () => {

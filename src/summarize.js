@@ -93,6 +93,18 @@ class Summarizer {
     }
 };
 
+class SimulatedIsingAnnealer {
+    constructor (latticeShape) {
+        this.latticeShape = latticeShape;
+        this.latticeSize = math.prod(latticeShape);
+    }
+
+    optimize (J, H) {
+        this.J = J;
+        this.H = H;
+    }
+};
+
 class QuantumIsingAnnealer {
     constructor (latticeShape) {
         this.latticeShape = latticeShape;
@@ -249,7 +261,7 @@ class QuantumIsingAnnealer {
             let flattenRightIdx = this._getFlattenIndex(rightIdx);
             _J.set([flattenLeftIdx, flattenRightIdx], value);
         });
-        return _J
+        return _J;
     }
 
     _getFlattenIndex (idx, shape) {
@@ -267,5 +279,6 @@ module.exports = {
     TinyTokenizer,
     VocabularyProcessor,
     Summarizer,
+    SimulatedIsingAnnealer,
     QuantumIsingAnnealer
 }
