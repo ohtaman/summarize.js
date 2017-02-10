@@ -99,9 +99,20 @@ class SimulatedIsingAnnealer {
         this.latticeSize = math.prod(latticeShape);
     }
 
-    optimize (J, H) {
+    optimize (J, H, kwargs={
+        initialBeta: 40,
+        betaFactor: 1.05,
+        freezeLimit: 100,
+        minPercent: 0.02,
+        maxFlip: 3,
+        maxAccepts: 10,
+        maxTrials: 100,
+        maxIter: 10000,
+        callback: () => {}
+    }) {
         this.J = J;
         this.H = H;
+        console.log(kwargs.maxFlip)
     }
 };
 

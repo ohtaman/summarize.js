@@ -65,7 +65,7 @@ describe('summarize', () => {
     describe('SimulatedIsingAnnealer', () => {
         let testee = new summarize.SimulatedIsingAnnealer((5, 5));
         let J = {}
-        testee.optimize(J)
+        testee.optimize(J, null, {initialBeta: 1})
     });
 
     describe('QuantumIsingAnnealer', () => {
